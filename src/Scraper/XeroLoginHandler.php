@@ -5,11 +5,10 @@ namespace Sminnee\WorkflowMax\Scraper;
 use Goutte\Client;
 
 /**
- * Handles the execution and parsing of a Xero-SSO log-in action via the Goutte client
+ * Handles the execution and parsing of a Xero-SSO log-in action via the Goutte client.
  */
 class XeroLoginHandler
 {
-
     protected $client;
 
     public function __construct(Client $client)
@@ -27,10 +26,10 @@ class XeroLoginHandler
     public function login(array $credentials)
     {
         // Open login form
-        $crawler = $this->client->request('GET', "https://practicemanager.xero.com/Access/Logon/TransitionToXeroLogin?offsetFromUtc=-720&username=" . urlencode($credentials['username']));
+        $crawler = $this->client->request('GET', 'https://practicemanager.xero.com/Access/Logon/TransitionToXeroLogin?offsetFromUtc=-720&username=' . urlencode($credentials['username']));
 
         $refreshHeader = $this->client->getInternalResponse()->getHeader('Refresh');
-        if(preg_match('#^\s*[0-9]+\s*;url=(.+)$#', $refreshHeader, $matches)) {
+        if (preg_match('#^\s*[0-9]+\s*;url=(.+)$#', $refreshHeader, $matches)) {
             $nextUrl = $matches[1];
         } else {
             throw new \LogicException("Bad refresh header '$refreshHeader'. Suspect Xero have changed their web-app.");
@@ -53,7 +52,7 @@ class XeroLoginHandler
         $crawler = $this->client->submit($form, []);
 
         // Check that you can see Time Summary on the homepage
-        $crawler = $this->client->request('GET', "https://my.workflowmax.com/my/overview.aspx");
+        $crawler = $this->client->request('GET', 'https://my.workflowmax.com/my/overview.aspx');
 
         $good = false;
         $headers = $crawler->filter('.LayoutSubHeading.LayoutSubHeadingUnderline');
@@ -64,7 +63,7 @@ class XeroLoginHandler
             }
         }
 
-        if (!$good) {
+        if (! $good) {
             return [
                 false,
                 "Can't find 'Time Summary' heading in landing page. Suspect failed login" . $crawler->html()
@@ -75,14 +74,14 @@ class XeroLoginHandler
     }
 
     /**
-     * Clean up an HTML string extracted from a cell
+     * Clean up an HTML string extracted from a cell.
      */
     protected function cleanHTML($html)
     {
         return trim(
             str_replace(
                 "\xC2\xA0",
-                " ",
+                ' ',
                 html_entity_decode(
                     strip_tags($html)
                 )

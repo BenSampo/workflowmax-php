@@ -6,11 +6,10 @@ use Sminnee\WorkflowMax\ApiClient;
 use Sminnee\WorkflowMax\Model\Invoice;
 
 /**
- * A sub-contact responsible for accessing job
+ * A sub-contact responsible for accessing job.
  */
 class InvoiceConnector extends TypeConnector
 {
-
     /**
      * @var
      */
@@ -21,7 +20,8 @@ class InvoiceConnector extends TypeConnector
      *
      * @param \Sminnee\WorkflowMax\ApiClient $connector
      */
-    function __construct(ApiClient $connector) {
+    public function __construct(ApiClient $connector)
+    {
         $this->connector = $connector;
     }
 
@@ -30,10 +30,11 @@ class InvoiceConnector extends TypeConnector
      *
      * @return Sminnee\WorkflowMax\Model\Invoice
      */
-    function byId($invoice) {
+    public function byId($invoice)
+    {
         return new Invoice($this->connector, $this->connector->apiCall(
             "invoice.api/get/$invoice",
-            function($result) {
+            function ($result) {
                 return $result['Invoice'];
             }
         ));
@@ -44,15 +45,17 @@ class InvoiceConnector extends TypeConnector
      *
      * @return mixed
      */
-    function byStub($stubData) {
+    public function byStub($stubData)
+    {
         return $this->byId($stubData['ID'])->populate($stubData);
     }
 
     /**
      * @return mixed
      */
-    function current() {
-        return $this->listFromApiCall($this->connector->apiCall('invoice.api/current', function($result) {
+    public function current()
+    {
+        return $this->listFromApiCall($this->connector->apiCall('invoice.api/current', function ($result) {
             return isset($result['Invoices']['Invoice']) ? $result['Invoices']['Invoice'] : [];
         }));
     }

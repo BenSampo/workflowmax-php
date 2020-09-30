@@ -7,13 +7,13 @@ class CsvFileIterator implements \IteratorAggregate
     protected $filename;
     protected $deleteOnCompletion;
 
-    function __construct($filename, $deleteOnCompletion = false)
+    public function __construct($filename, $deleteOnCompletion = false)
     {
         $this->filename = $filename;
         $this->deleteOnCompletion = $deleteOnCompletion;
     }
 
-    function getIterator()
+    public function getIterator()
     {
         $fh = fopen($this->filename, 'r');
 

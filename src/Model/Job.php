@@ -3,11 +3,10 @@
 namespace Sminnee\WorkflowMax\Model;
 
 use Datetime;
-use Sminnee\WorkflowMax\ApiCall;
 use Sminnee\WorkflowMax\Model\Traits\HasCustomFields;
 
 /**
- * Represents a single job
+ * Represents a single job.
  *
  * @property-read string $ID
  * @property-read string $Name
@@ -30,25 +29,25 @@ class Job
         return 'forJob';
     }
 
-    function processData($data) {
-
-        if(isset($data['Client'])) {
+    public function processData($data)
+    {
+        if (isset($data['Client'])) {
             $data['Client'] = $this->connector
                 ->client()
                 ->byStub($data['Client']);
         }
 
-        if(isset($data['Manager'])) {
+        if (isset($data['Manager'])) {
             $data['Manager'] = $this->connector
                 ->staff()
                 ->byStub($data['Manager']);
         }
 
-        if(isset($data['StartDate'])) {
+        if (isset($data['StartDate'])) {
             $data['StartDate'] = new Datetime($data['StartDate']);
         }
 
-        if(isset($data['DueDate'])) {
+        if (isset($data['DueDate'])) {
             $data['DueDate'] = new Datetime($data['DueDate']);
         }
 

@@ -5,11 +5,10 @@ namespace Sminnee\WorkflowMax\Scraper;
 use Goutte\Client;
 
 /**
- * Handles the execution and parsing of a log-in action via the Goutte client
+ * Handles the execution and parsing of a log-in action via the Goutte client.
  */
 class LoginHandler
 {
-
     protected $client;
 
     public function __construct(Client $client)
@@ -27,7 +26,7 @@ class LoginHandler
     public function login(array $credentials)
     {
         // Open login form
-        $crawler = $this->client->request('GET', "https://practicemanager.xero.com/Access/Logon/TransitionToXeroLogin?username=" . urlencode($credentials['username']));
+        $crawler = $this->client->request('GET', 'https://practicemanager.xero.com/Access/Logon/TransitionToXeroLogin?username=' . urlencode($credentials['username']));
 
         $refreshHeader = $crawler->getHeader('Refresh');
 
@@ -52,7 +51,8 @@ class LoginHandler
         $error = $crawler->filter('.public-message .message.alert');
         if ($error->count() > 0) {
             $message = $this->cleanHTML($error->html());
-            $message = ''. $message;
+            $message = '' . $message;
+
             return [false, $message];
         }
 
@@ -62,7 +62,7 @@ class LoginHandler
             }
         }
 
-        $crawler = $this->client->request('GET', "https://app.my.workflowmax.com/my/overview.aspx");
+        $crawler = $this->client->request('GET', 'https://app.my.workflowmax.com/my/overview.aspx');
 
         $good = false;
         $headers = $crawler->filter('.LayoutSubHeading.LayoutSubHeadingUnderline');
@@ -73,7 +73,7 @@ class LoginHandler
             }
         }
 
-        if (!$good) {
+        if (! $good) {
             return [
                 false,
                 "Can't find 'Time Summary' heading in landing page. Suspect failed login" . $crawler->html()
@@ -84,14 +84,14 @@ class LoginHandler
     }
 
     /**
-     * Clean up an HTML string extracted from a cell
+     * Clean up an HTML string extracted from a cell.
      */
     protected function cleanHTML($html)
     {
         return trim(
             str_replace(
                 "\xC2\xA0",
-                " ",
+                ' ',
                 html_entity_decode(
                     strip_tags($html)
                 )

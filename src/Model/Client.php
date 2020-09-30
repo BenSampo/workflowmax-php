@@ -2,15 +2,13 @@
 
 namespace Sminnee\WorkflowMax\Model;
 
-use Sminnee\WorkflowMax\ApiCall;
 use Sminnee\WorkflowMax\Model\Traits\HasCustomFields;
 
 /**
- * Represents a single client
+ * Represents a single client.
  */
 class Client
 {
-
     use ModelBase;
     use HasCustomFields;
 
@@ -18,9 +16,9 @@ class Client
     {
         return 'forClient';
     }
-    
-    function processData($data) {
+
+    public function processData($data)
+    {
         return $data;
     }
-
 }

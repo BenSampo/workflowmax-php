@@ -6,11 +6,10 @@ use Goutte\Client;
 use GuzzleHttp\Cookie\CookieJar;
 
 /**
- * Fetches the content of a WorkflowMax report
+ * Fetches the content of a WorkflowMax report.
  */
 class ReportFetcher
 {
-
     protected $client;
 
     public function __construct(Client $client)
@@ -27,7 +26,7 @@ class ReportFetcher
     }
 
     /**
-     * Make a single call to the Ajax Pro service that WorkflowMax uses
+     * Make a single call to the Ajax Pro service that WorkflowMax uses.
      */
     public function ajaxProCall($class, $method, $data)
     {
@@ -39,9 +38,8 @@ class ReportFetcher
                     'Content-Type' => 'text/plain',
                     'X-AjaxPro-Method' => $method,
                 ],
-                'cookies' => $this->getCookiesFor("https://app.my.workflowmax.com/"),
+                'cookies' => $this->getCookiesFor('https://app.my.workflowmax.com/'),
                 'body' => json_encode($data),
-
             ]
         );
     }
@@ -60,7 +58,7 @@ class ReportFetcher
             $response = $guzzleClient->request(
                 'GET',
                 "https://app.my.workflowmax.com/reports/view.aspx?id={$reportID}",
-                [ 'cookies' => $this->getCookiesFor("https://app.my.workflowmax.com/") ]
+                ['cookies' => $this->getCookiesFor('https://app.my.workflowmax.com/')]
             );
             $body = '' . $response->getBody();
             if (preg_match('/new WorkflowMax.Control.ReportDesigner\(\s*([0-9]+)\s*\)/', $body, $matches)) {
@@ -74,17 +72,17 @@ class ReportFetcher
             $availableCriteriaString = preg_replace('/;\/\*.*$/', '', '' . $this->ajaxProCall(
                 'WorkFlowMax.Web.UI.ReportDesigner,WorkFlowMax.Web.UI',
                 'LoadEditableCriteria',
-                ['id' => $reportDesignerID ]
+                ['id' => $reportDesignerID]
             )->getBody());
             $availableCriteria = json_decode($availableCriteriaString, true);
 
-            if (!isset($availableCriteria['criteriaList']['criteria'])) {
+            if (! isset($availableCriteria['criteriaList']['criteria'])) {
                 throw new \LogicException("Unclear criteria schema data in $availableCriteriaString");
             }
 
             $criteriaMap = [];
             foreach ($availableCriteria['criteriaList']['criteria'] as $criterion) {
-                if (!isset($criteriaMap[$criterion['name']])) {
+                if (! isset($criteriaMap[$criterion['name']])) {
                     $criteriaMap[$criterion['name']] = [];
                 }
                 $criteriaMap[$criterion['name']][] = $criterion['id'];
@@ -124,23 +122,22 @@ class ReportFetcher
             ['design_id' => $reportID, 'format' => 'csv']
         );
 
-
         // Some garbled content in the JSON body just to mess with us.
-        $jsonBody = preg_replace('/;\/\*.*$/', '', ''.$response->getBody());
+        $jsonBody = preg_replace('/;\/\*.*$/', '', '' . $response->getBody());
         $csvExport = json_decode($jsonBody, true);
 
-        if (!isset($csvExport["url"])) {
+        if (! isset($csvExport['url'])) {
             throw new \LogicException("Couldn't export report: " . var_export($response, true) . "\n" . $response->getBody());
         }
 
-        $downloadURL = "https://app.my.workflowmax.com/reports/" . $csvExport["url"];
+        $downloadURL = 'https://app.my.workflowmax.com/reports/' . $csvExport['url'];
 
         $csvFilename = tempnam('/tmp', 'report');
         $guzzleClient->get(
             $downloadURL,
             [
                 'allow_redirects' => true,
-                'cookies' => $this->getCookiesFor("https://app.my.workflowmax.com/"),
+                'cookies' => $this->getCookiesFor('https://app.my.workflowmax.com/'),
                 'save_to' => $csvFilename,
             ]
         );

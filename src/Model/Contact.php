@@ -2,11 +2,8 @@
 
     namespace Sminnee\WorkflowMax\Model;
 
-    use Datetime;
-    use Sminnee\WorkflowMax\ApiCall;
-
     /**
-     * Represents a single contact
+     * Represents a single contact.
      *
      * @property-read string $ID
      * @property-read string $IsPrimary
@@ -28,7 +25,8 @@
          * @return mixed
          * @throws \Exception
          */
-        function processData($data) {
+        public function processData($data)
+        {
             return $data;
         }
     }

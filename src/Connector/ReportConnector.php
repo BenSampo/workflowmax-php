@@ -2,19 +2,15 @@
 
 namespace Sminnee\WorkflowMax\Connector;
 
-use Datetime;
-
 use Sminnee\WorkflowMax\ApiClient;
-use Sminnee\WorkflowMax\Scraper\ReportFetcher;
 use Sminnee\WorkflowMax\Model\Job;
-use Sminnee\WorkflowMax\Model\JobList;
+use Sminnee\WorkflowMax\Scraper\ReportFetcher;
 
 /**
- * A sub-client responsible for accessing job
+ * A sub-client responsible for accessing job.
  */
 class ReportConnector
 {
-
     protected $connector;
     protected $fetcher;
 
@@ -25,14 +21,15 @@ class ReportConnector
 
     public function fetcher()
     {
-        if (!$this->fetcher) {
+        if (! $this->fetcher) {
             $this->fetcher = new ReportFetcher($this->connector->goutte());
         }
+
         return $this->fetcher;
     }
 
     /**
-     * Returns a report by the given ID
+     * Returns a report by the given ID.
      *
      * @return iterator
      */

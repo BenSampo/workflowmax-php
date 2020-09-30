@@ -6,7 +6,7 @@
     use Sminnee\WorkflowMax\Model\Quote;
 
     /**
-     * A sub-client responsible for accessing quote
+     * A sub-client responsible for accessing quote.
      */
     class QuoteConnector extends TypeConnector
     {
@@ -20,7 +20,8 @@
          *
          * @param \Sminnee\WorkflowMax\ApiClient $connector
          */
-        function __construct(ApiClient $connector) {
+        public function __construct(ApiClient $connector)
+        {
             $this->connector = $connector;
         }
 
@@ -29,10 +30,11 @@
          *
          * @return Sminnee\WorkflowMax\Model\Quote
          */
-        function byId($quote) {
+        public function byId($quote)
+        {
             return new Quote($this->connector, $this->connector->apiCall(
                 "quote.api/get/$quote",
-                function($result) {
+                function ($result) {
                     return $result['Quote'];
                 }
             ));
@@ -43,16 +45,17 @@
          *
          * @return mixed
          */
-        function byStub($stubData) {
+        public function byStub($stubData)
+        {
             return $this->byId($stubData['ID'])->populate($stubData);
         }
-
 
         /**
          * @return mixed
          */
-        function current() {
-            return $this->listFromApiCall($this->connector->apiCall('quote.api/current', function($result) {
+        public function current()
+        {
+            return $this->listFromApiCall($this->connector->apiCall('quote.api/current', function ($result) {
                 return isset($result['Quotes']['Quote']) ? $result['Quotes']['Quote'] : [];
             }));
         }

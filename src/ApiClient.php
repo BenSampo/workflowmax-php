@@ -5,11 +5,10 @@ namespace Sminnee\WorkflowMax;
 use GuzzleHttp\Client as Guzzle;
 
 /**
- * The WorkflowMax API connector
+ * The WorkflowMax API connector.
  */
 class ApiClient
 {
-
     /**
      * @var
      */
@@ -34,20 +33,20 @@ class ApiClient
 
         $this->fetcher = new Guzzle([
             'base_uri' => 'https://api.workflowmax.com/',
-            'timeout'  => 30.0,
+            'timeout' => 30.0,
         ]);
     }
 
     /**
-     * Get a goutte client logged into this WFM account
+     * Get a goutte client logged into this WFM account.
      * @return \Goutte\Client
      */
     public function goutte()
     {
-        if (!$this->goutte) {
+        if (! $this->goutte) {
             $this->goutte = new \Goutte\Client();
 
-            if (!empty($this->params['xero_login'])) {
+            if (! empty($this->params['xero_login'])) {
                 $login = new Scraper\XeroLoginHandler($this->goutte);
             } else {
                 $login = new Scraper\LoginHandler($this->goutte);
@@ -63,7 +62,7 @@ class ApiClient
                 'username' => $this->params['username'], 'password' => $this->params['password']
             ]);
 
-            if (!$success) {
+            if (! $success) {
                 throw new \LogicException("Couldn't log in: " . $message);
             }
         }
@@ -103,14 +102,13 @@ class ApiClient
         return new Connector\ClientConnector($this);
     }
 
-     /**
-     * @return Sminnee\WorkflowMax\Connector\CustomFieldConnector
-     */
+    /**
+    * @return Sminnee\WorkflowMax\Connector\CustomFieldConnector
+    */
     public function customField()
     {
         return new Connector\CustomFieldConnector($this);
     }
-
 
     /**
      * @return \Sminnee\WorkflowMax\Connector\ReportConnector
@@ -119,7 +117,6 @@ class ApiClient
     {
         return new Connector\ReportConnector($this);
     }
-
 
     /**
      * @return \Sminnee\WorkflowMax\Connector\QuoteConnector
@@ -146,9 +143,9 @@ class ApiClient
     }
 
     /**
-     * Make an API call
+     * Make an API call.
      * @param string $url The relative URL (e.g. 'jobs.api/list')
-     * @return Sminnee\WorkflowMax\ApiCall The API call
+     * @return ApiCall The API call
      */
     public function apiCall($url, callable $dataProcessor)
     {
@@ -156,7 +153,7 @@ class ApiClient
 
         $fullUrl = $url . $paramJoiner
             . 'apiKey=' . urlencode($this->params['api_key'])
-            . '&accountKey='  .urlencode($this->params['account_key']);
+            . '&accountKey=' . urlencode($this->params['account_key']);
 
         return new ApiCall($fullUrl, $this->fetcher, $dataProcessor);
     }

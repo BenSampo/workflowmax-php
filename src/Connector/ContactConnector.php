@@ -2,18 +2,14 @@
 
     namespace Sminnee\WorkflowMax\Connector;
 
-    use Datetime;
-
     use Sminnee\WorkflowMax\ApiClient;
     use Sminnee\WorkflowMax\Model\Contact;
-    use Sminnee\WorkflowMax\Model\JobList;
 
     /**
-     * A sub-contact responsible for accessing job
+     * A sub-contact responsible for accessing job.
      */
     class ContactConnector
     {
-
         /**
          * @var
          */
@@ -24,7 +20,8 @@
          *
          * @param \Sminnee\WorkflowMax\ApiClient $connector
          */
-        function __construct(ApiClient $connector) {
+        public function __construct(ApiClient $connector)
+        {
             $this->connector = $connector;
         }
 
@@ -33,10 +30,11 @@
          *
          * @return Sminnee\WorkflowMax\Model\Contact
          */
-        function byId($id) {
+        public function byId($id)
+        {
             return new Contact($this->connector, $this->connector->apiCall(
                 "client.api/contact/$id",
-                function($result) { return $result['Contact']; }
+                function ($result) { return $result['Contact']; }
             ));
         }
 
@@ -45,7 +43,8 @@
          *
          * @return mixed
          */
-        function byStub($stubData) {
+        public function byStub($stubData)
+        {
             return $this->byId($stubData['ID'])->populate($stubData);
         }
     }

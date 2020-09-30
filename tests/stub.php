@@ -1,13 +1,12 @@
 <?php
 
-require(__DIR__ . "/../vendor/autoload.php");
+require __DIR__ . '/../vendor/autoload.php';
 
 use Sminnee\WorkflowMax\ApiClient;
-use Sminnee\WorkflowMax\IterMiner\IterMiner;
 
 $client = new ApiClient([
-	'api_key' => getenv('WFM_API_KEY') ,
-	'account_key' => getenv('WFM_ACCOUNT_KEY'),
+    'api_key' => getenv('WFM_API_KEY'),
+    'account_key' => getenv('WFM_ACCOUNT_KEY'),
 ]);
 
 $from = (new Datetime())->sub(new DateInterval('P2D'));
@@ -16,11 +15,12 @@ $to = (new Datetime())->sub(new DateInterval('P1D'));
 $times = $client->timesheet()->byDay($to);
 
 $grouped = iter\reduce(
-    function($acc, $val) {
-        if(empty($acc[$val->Staff->Name])) {
+    function ($acc, $val) {
+        if (empty($acc[$val->Staff->Name])) {
             $acc[$val->Staff->Name] = 0.0;
         }
-        $acc[$val->Staff->Name] += $val->Minutes/60;
+        $acc[$val->Staff->Name] += $val->Minutes / 60;
+
         return $acc;
     },
     $times

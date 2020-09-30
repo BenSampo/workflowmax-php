@@ -7,7 +7,7 @@ trait HasCustomFields
     protected $hasResolvedCustomFields = false;
     protected $customFields = [];
 
-    abstract function customFieldConnectorMethodName();
+    abstract public function customFieldConnectorMethodName();
 
     public function customField($fieldName)
     {

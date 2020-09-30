@@ -1,9 +1,11 @@
 <?php
+
 namespace Sminnee\WorkflowMax\Model;
+
 use Datetime;
-use Sminnee\WorkflowMax\ApiCall;
+
 /**
- * Represents a single invoice
+ * Represents a single invoice.
  *
  * @property-read string $ID
  * @property-read string $Type
@@ -26,29 +28,32 @@ use Sminnee\WorkflowMax\ApiCall;
 class Invoice
 {
     use ModelBase;
+
     /**
      * @param $data
      *
      * @return mixed
      * @throws \Exception
      */
-    function processData($data) {
-        if(isset($data['Client'])) {
+    public function processData($data)
+    {
+        if (isset($data['Client'])) {
             $data['Client'] = $this->connector
                 ->client()
                 ->byStub($data['Client']);
         }
-        if(isset($data['Contact'])) {
+        if (isset($data['Contact'])) {
             $data['Contact'] = $this->connector
                 ->contact()
                 ->byStub($data['Contact']);
         }
-        if(isset($data['Date'])) {
+        if (isset($data['Date'])) {
             $data['Date'] = new Datetime($data['Date']);
         }
-        if(isset($data['DueDate'])) {
+        if (isset($data['DueDate'])) {
             $data['DueDate'] = new Datetime($data['DueDate']);
         }
+
         return $data;
     }
 }
