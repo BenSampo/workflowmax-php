@@ -3,22 +3,18 @@
 namespace Sminnee\WorkflowMax\Connector;
 
 use Datetime;
-use iter;
-
 use Sminnee\WorkflowMax\ApiClient;
-use Sminnee\WorkflowMax\ApiCall;
 use Sminnee\WorkflowMax\Model\Timesheet;
-use Sminnee\WorkflowMax\Model\TimesheetList;
 
 /**
- * A sub-client responsible for accessing job
+ * A sub-client responsible for accessing job.
  */
 class TimesheetConnector extends TypeConnector
 {
-
     protected $client;
 
-    function __construct(ApiClient $connector) {
+    public function __construct(ApiClient $connector)
+    {
         $this->connector = $connector;
     }
 
@@ -27,51 +23,61 @@ class TimesheetConnector extends TypeConnector
      *
      * @return Sminnee\WorkflowMax\Model\Timesheet
      */
-    function byId($id) {
+    public function byId($id)
+    {
         return new Timesheet($this->connector, $this->connector->apiCall(
             "time.api/get/$id",
-            function($result) { return $result['Time']; }
+            function ($result) {
+                return $result['Time'];
+            }
         ));
     }
 
     /**
-     * Returns timesheets for a given job
+     * Returns timesheets for a given job.
      *
-     * @return Sminnee\WorkflowMax\Model\TimesheetList
+     * @return \Iterator
      */
-    function byJob($jobId) {
-        return new TimesheetList($this->connector, $this->connector->apiCall(
+    public function byJob($jobId)
+    {
+        return $this->listFromApiCall($this->connector->apiCall(
             "time.api/job/$jobId",
-            function($result) { return $result['Times']; }
+            function ($result) {
+                return isset($result['Times']['Time']) ? $result['Times']['Time'] : [];
+            }
         ));
     }
 
-    function byStub($stubData) {
+    public function byStub($stubData)
+    {
         return $this->byId($stubData['ID'])->populate($stubData);
     }
 
-
     /**
-     * Returns all timesheet entries in a given date range
+     * Returns all timesheet entries in a given date range.
      *
      * @param Datetime $start The date at the start of the date range
      * @param Datetime $end The date at the end of the date range
      *
-     * @return Sminnee\WorkflowMax\Model\TimesheetList
+     * @return \Iterator
      */
-    function byDateRange(Datetime $start, Datetime $end) {
+    public function byDateRange(Datetime $start, Datetime $end)
+    {
         $params = 'from=' . urlencode($start->format('Ymd')) . '&to=' . urlencode($end->format('Ymd'));
 
         return $this->listFromApiCall($this->connector->apiCall(
             'time.api/list?' . $params,
-            function($result) { return isset($result['Times']['Time']) ? $result['Times']['Time'] : []; }
+            function ($result) {
+                return isset($result['Times']['Time']) ? $result['Times']['Time'] : [];
+            }
         ));
     }
 
     /**
-     * Return timesheet entries for a single day
+     * Return timesheet entries for a single day.
      */
-    function byDay($day) {
+    public function byDay($day)
+    {
         return $this->byDateRange($day, $day);
     }
 }
