@@ -26,7 +26,7 @@ class ReportConnector
     public function fetcher()
     {
         if (!$this->fetcher) {
-            $this->fetcher = new ReportFetcher($this->connector->goutte(), $this->connector->httpClient());
+            $this->fetcher = new ReportFetcher($this->connector->goutte());
         }
         return $this->fetcher;
     }
